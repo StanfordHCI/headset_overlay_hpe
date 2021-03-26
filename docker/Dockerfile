@@ -6,6 +6,7 @@ RUN git clone https://github.com/StanfordHCI/human-pose-estimation.pytorch.git
 WORKDIR /workspace/human-pose-estimation.pytorch
 RUN git checkout
 RUN pip3 install -r requirements.txt
+RUN pip3 install watchdog
 
 WORKDIR /workspace/
 USER root
