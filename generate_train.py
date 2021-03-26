@@ -25,28 +25,21 @@ def add_ssh_volume(op):
     description='Train and evaluate a SlowFast + LSTM model'
 )
 def train_eval_epic(
-        owner,
-        project,
-        experiment,
-        model,
         git_rev,
-        pretrained_s3,
-        mode,
-        train_additional_args='',
-        eval_additional_args=''
+        update_data,
+        config,
+        name,
+        additional_args,
 ):
     train_env = {}
 
     train_num_gpus = 4
     train_op = components.load_component_from_file('components/train.yaml')(
-        owner=owner,
-        project=project,
-        experiment=experiment,
-        model=model,
         git_rev=git_rev,
-        pretrained_s3=pretrained_s3,
-        mode=mode,
-        additional_args=train_additional_args)
+        update_data=update_data,
+        config=config,
+        name=name,
+        additional_args=additional_args)
     (train_op.container
      .set_memory_request('56Gi')
      .set_memory_limit('56Gi')
