@@ -67,6 +67,7 @@ class OutputUpdateHandler(FileSystemEventHandler):
 
 
 if __name__ == '__main__':
+    os.system("pip3 install watchdog")
     checkout_repo(args.git_rev)
     setup_dir()
     event_handler = OutputUpdateHandler()
