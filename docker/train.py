@@ -1,5 +1,6 @@
 import argparse
 import os
+import shutil
 import subprocess
 
 from watchdog.observers import Observer
@@ -39,11 +40,15 @@ def checkout_repo(git_rev: str):
 
 
 def pull_data():
+    if args.update_data == 'true':
+        shutil.rmtree(DATA_DIR)
     if not os.path.exists(DATA_DIR) or args.update_data == 'true':
         print("pulling data")
         os.system(f"aws s3 cp {DATA_S3} {DATA_DRIVE}")
         os.system(f"cd {DATA_DRIVE} && pbzip2 -dc data.tar.bz2 | tar x")
 
+    if args.update_data == 'true':
+        shutil.rmtree(MODELS_DIR)
     if not os.path.exists(MODELS_DIR) or args.update_data == 'true':
         print("pulling models")
         os.system(f"aws s3 cp {MODELS_S3} {DATA_DRIVE}")
