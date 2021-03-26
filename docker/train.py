@@ -67,7 +67,6 @@ class OutputUpdateHandler(FileSystemEventHandler):
 
 
 if __name__ == '__main__':
-    os.system("pip3 install watchdog")
     checkout_repo(args.git_rev)
     setup_dir()
     event_handler = OutputUpdateHandler()
@@ -80,7 +79,8 @@ if __name__ == '__main__':
         f"python3 pose_estimation/train.py "
         f"--cfg experiments/{args.config} "
         f"--log {LOG_DIR} "
-        f"{args.additional_args}"
+        f"{args.additional_args}",
+        shell=True
     )
 
     train_process.wait()
