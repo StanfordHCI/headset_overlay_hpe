@@ -17,7 +17,7 @@ implementation:
         --git_rev, { inputValue: git_rev },
         --update_data, { inputValue: update_data },
         --config, { inputValue: config },
-        --name, { inputValue: name }
+        --name, { inputValue: name },
         --additional_args, { inputValue: additional_args },
     ]
 # --tensorboard_dir /shared/tensorboard/${project}/${experiment}/${owner}/${model}
