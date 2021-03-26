@@ -13,7 +13,7 @@ implementation:
   container:
     image: '932360549041.dkr.ecr.us-west-2.amazonaws.com/genie-toolkit-jupyter:headset-overlay-hpe-v0-1'
     command: [
-        /workspace/train.py,
+        python3, /workspace/train.py,
         --git_rev, { inputValue: git_rev },
         --update_data, { inputValue: update_data },
         --config, { inputValue: config },
