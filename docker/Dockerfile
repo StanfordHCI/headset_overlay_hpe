@@ -4,9 +4,11 @@ RUN apt-get update && apt-get install -y git pbzip2 curl unzip
 
 RUN git clone https://github.com/StanfordHCI/human-pose-estimation.pytorch.git
 WORKDIR /workspace/human-pose-estimation.pytorch
-RUN git checkout
 RUN pip3 install -r requirements.txt
-RUN pip3 install watchdog
+RUN pip3 install watchdog pycocotools
+
+WORKDIR /workspace/human-pose-estimation.pytorch/lib
+RUN make
 
 WORKDIR /workspace/
 USER root

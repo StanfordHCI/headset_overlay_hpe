@@ -79,6 +79,7 @@ if __name__ == '__main__':
         f"cd {REPO_DIR} &&"
         f"python3 pose_estimation/train.py "
         f"--cfg experiments/{args.config} "
+        f"--log {LOG_DIR} "
         f"{args.additional_args}"
     )
 
