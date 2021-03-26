@@ -1,6 +1,6 @@
 FROM pytorch/pytorch:1.8.0-cuda11.1-cudnn8-devel
 
-RUN apt-get update && apt-get install -y git pbzip2 curl unzip
+RUN apt-get update && apt-get install -y git pbzip2 curl unzip ffmpeg libsm6 libxext6 libgl1-mesa-glx
 
 RUN git clone https://github.com/StanfordHCI/human-pose-estimation.pytorch.git
 WORKDIR /workspace/human-pose-estimation.pytorch
