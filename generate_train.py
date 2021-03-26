@@ -24,7 +24,7 @@ def add_ssh_volume(op):
     name='Train and eval epic kitchen LSTM',
     description='Train and evaluate a SlowFast + LSTM model'
 )
-def train_eval_epic(
+def train_headset_overlay(
         git_rev,
         update_data,
         config,
