@@ -68,7 +68,8 @@ class OutputUpdateHandler(FileSystemEventHandler):
 
 if __name__ == '__main__':
     pull_data()
-    os.makedirs(LOG_DIR)
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
     checkout_repo(args.git_rev)
     setup_dir()
     event_handler = OutputUpdateHandler()

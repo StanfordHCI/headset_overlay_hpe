@@ -11,7 +11,7 @@ outputs:
   - {name: s3_model_dir}
 implementation:
   container:
-    image: '932360549041.dkr.ecr.us-west-2.amazonaws.com/genie-toolkit-jupyter:headset-overlay-hpe-v0-11'
+    image: '932360549041.dkr.ecr.us-west-2.amazonaws.com/genie-toolkit-jupyter:headset-overlay-hpe-v0-12'
     command: [
         python3, /workspace/train.py,
         --git_rev, { inputValue: git_rev },
