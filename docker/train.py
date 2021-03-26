@@ -22,8 +22,8 @@ OWNER = "jackiey"
 EXPERIMENT = args.name
 MODEL = args.config.rpartition('.')[0]
 DATETIME = datetime.now().strftime('%Y%m%dT%H%M%S')
-LOG_DIR = f"/shared/tensorboard/{PROJECT}/{EXPERIMENT}/${OWNER}/${MODEL}"
-S3_MODEL_DIR = f"s3://geniehai/${OWNER}/models/${PROJECT}/${EXPERIMENT}/${MODEL}/{DATETIME}/"
+LOG_DIR = f"/shared/tensorboard/{PROJECT}/{EXPERIMENT}/{OWNER}/{MODEL}"
+S3_MODEL_DIR = f"s3://geniehai/{OWNER}/models/{PROJECT}/{EXPERIMENT}/{MODEL}/{DATETIME}/"
 
 DATA_DRIVE = "/data/"
 DATA_S3 = "s3://geniehai/jackiey/coco_headset/data.tar.bz2"
