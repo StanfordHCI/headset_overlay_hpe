@@ -6,7 +6,7 @@ RUN git clone https://github.com/StanfordHCI/human-pose-estimation.pytorch.git
 WORKDIR /workspace/human-pose-estimation.pytorch
 RUN git pull
 RUN pip3 install -r requirements.txt
-RUN pip3 install watchdog pycocotools
+RUN pip3 install watchdog pycocotools tensorboard
 
 WORKDIR /workspace/human-pose-estimation.pytorch/lib
 RUN make
