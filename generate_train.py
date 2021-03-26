@@ -25,6 +25,7 @@ def add_ssh_volume(op):
     description='Train and evaluate a SlowFast + LSTM model'
 )
 def train_headset_overlay(
+        image,
         git_rev,
         update_data,
         config,
@@ -35,6 +36,7 @@ def train_headset_overlay(
 
     train_num_gpus = 4
     train_op = components.load_component_from_file('components/train.yaml')(
+        image=image,
         git_rev=git_rev,
         update_data=update_data,
         config=config,
