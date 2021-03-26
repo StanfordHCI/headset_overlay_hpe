@@ -1,5 +1,5 @@
 name: Train
-descriotion: Training
+description: Training
 inputs:
   - {name: image, description: ''}
   - {name: update_data, description: ''}
