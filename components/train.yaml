@@ -19,5 +19,6 @@ implementation:
         --config, { inputValue: config },
         --name, { inputValue: name },
         --additional_args, { inputValue: additional_args },
+        --image, {inputValue: image}
     ]
 # --tensorboard_dir /shared/tensorboard/${project}/${experiment}/${owner}/${model}

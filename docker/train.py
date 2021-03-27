@@ -12,6 +12,7 @@ parser.add_argument('--git_rev', type=str)
 parser.add_argument('--update_data', type=str)
 parser.add_argument('--config', type=str)  # coco/resnet50/256x192_d256x3_adam_lr1e-3.yaml
 parser.add_argument('--name', type=str)
+parser.add_argument('--image', type=str)
 parser.add_argument('--additional_args', type=str)
 
 args = parser.parse_args()
