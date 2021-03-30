@@ -1,0 +1,24 @@
+name: VideoPoseGen
+description: Generate data for videopose
+inputs:
+  - {name: image, description: ''}
+  - {name: update_data, description: ''}
+  - {name: git_rev, description: ''}
+  - {name: config, description: ''}
+  - {name: name, description: ''}
+  - {name: additional_args, description: ''}
+outputs:
+  - {name: s3_model_dir}
+implementation:
+  container:
+    image: '{{inputs.parameters.image}}'
+    command: [
+        python3, /workspace/videopose_gen.py,
+        --git_rev, { inputValue: git_rev },
+        --update_data, { inputValue: update_data },
+        --config, { inputValue: config },
+        --name, { inputValue: name },
+        --additional_args, { inputValue: additional_args },
+        --image, {inputValue: image}
+    ]
+# --tensorboard_dir /shared/tensorboard/${project}/${experiment}/${owner}/${model}

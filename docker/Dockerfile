@@ -17,7 +17,14 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 RUN unzip awscliv2.zip
 RUN ./aws/install
 
-COPY train.py /workspace/
+RUN git clone https://github.com/StanfordHCI/VideoPose3D.git videopose3d
+WORKDIR /workspace/videopose3d
+RUN git pull
+RUN git pull
+RUN git checkout "model_v1.9_new"
+RUN pip3 install -r requirements.txt
+
+COPY *.py /workspace/
 
 USER root
 WORKDIR /workspace/human-pose-estimation.pytorch
