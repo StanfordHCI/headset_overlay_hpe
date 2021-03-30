@@ -28,6 +28,7 @@ def pull_any_data(data_dir, data_s3, force_update):
     print(f"pulling data from {data_s3}({file_name}) to {parent_data_dir} for {data_dir}")
     if not os.path.isdir(parent_data_dir):
         os.mkdir(parent_data_dir)
+    os.system(f"rm {file_name}")
     os.system(f"aws s3 cp {data_s3} {parent_data_dir}")
     os.system(f"cd {parent_data_dir} && tar -xzvf {file_name} && rm {file_name}")
     os.system(f"df -h")
