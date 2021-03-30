@@ -46,14 +46,14 @@ def pull_data():
     if not os.path.exists(DATA_DIR) or args.update_data == 'true':
         print("pulling data")
         os.system(f"aws s3 cp {DATA_S3} {DATA_DRIVE}")
-        os.system(f"cd {DATA_DRIVE} && pbzip2 -dc data.tar.bz2 | tar x")
+        os.system(f"cd {DATA_DRIVE} && pbzip2 -dc data.tar.bz2 | tar x && rm data.tar.bz2")
 
     if args.update_data == 'true':
         shutil.rmtree(MODELS_DIR)
     if not os.path.exists(MODELS_DIR) or args.update_data == 'true':
         print("pulling models")
         os.system(f"aws s3 cp {MODELS_S3} {DATA_DRIVE}")
-        os.system(f"cd {DATA_DRIVE} && pbzip2 -dc models.tar.bz2 | tar x")
+        os.system(f"cd {DATA_DRIVE} && pbzip2 -dc models.tar.bz2 | tar x && rm models.tar.bz2")
 
 
 def setup_dir():

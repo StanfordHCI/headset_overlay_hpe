@@ -20,7 +20,6 @@ RUN ./aws/install
 RUN git clone https://github.com/StanfordHCI/VideoPose3D.git videopose3d
 WORKDIR /workspace/videopose3d
 RUN git pull
-RUN git pull
 RUN git checkout "model_v1.9_new"
 RUN pip3 install -r requirements.txt
 
