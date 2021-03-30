@@ -2,9 +2,9 @@ name: VideoPoseGen
 description: Generate data for videopose
 inputs:
   - {name: image, description: ''}
-  - {name: update_data, description: ''}
+  - {name: resnet_model, description: ''}
   - {name: git_rev, description: ''}
-  - {name: config, description: ''}
+  - {name: mode, description: ''}
   - {name: name, description: ''}
   - {name: additional_args, description: ''}
 outputs:
@@ -15,10 +15,9 @@ implementation:
     command: [
         python3, /workspace/videopose_gen.py,
         --git_rev, { inputValue: git_rev },
-        --update_data, { inputValue: update_data },
-        --config, { inputValue: config },
+        --resnet_model, { inputValue: resnet_model },
+        --mode, { inputValue: mode },
         --name, { inputValue: name },
         --additional_args, { inputValue: additional_args },
         --image, {inputValue: image}
     ]
-# --tensorboard_dir /shared/tensorboard/${project}/${experiment}/${owner}/${model}
