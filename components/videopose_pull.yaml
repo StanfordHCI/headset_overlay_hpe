@@ -12,6 +12,6 @@ implementation:
     command: [
         python3, /workspace/videopose_pull.py,
         --update_data, { inputValue: update_data },
-        --data, { inputValue: data }，
+        --data, { inputValue: data },
         --image, { inputvalue: image }
     ]
