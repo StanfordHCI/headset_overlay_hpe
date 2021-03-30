@@ -3,10 +3,7 @@ description: Pull data for videopose
 inputs:
   - {name: image, description: ''}
   - {name: update_data, description: ''}
-  - {name: git_rev, description: ''}
-  - {name: config, description: ''}
-  - {name: name, description: ''}
-  - {name: additional_args, description: ''}
+  - {name: data, description: ''}
 outputs:
   - {name: s3_model_dir}
 implementation:
@@ -15,5 +12,6 @@ implementation:
     command: [
         python3, /workspace/videopose_pull.py,
         --update_data, { inputValue: update_data },
-        --data, { inputValue: data }
+        --data, { inputValue: data }，
+        --image, { inputvalue: image }
     ]
