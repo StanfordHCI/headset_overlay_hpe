@@ -85,3 +85,27 @@ def videopose_pull(
         update_data=update_data,
         data=data)
     get_container(train_op, train_env, train_num_gpus)
+
+@dsl.pipeline(
+    name='videopose_gen',
+    description='generate videopose data'
+)
+def videopose_gen(
+        image,
+        git_rev,
+        resnet_model,
+        mode,
+        name,
+        additional_args,
+):
+    train_env = {}
+
+    train_num_gpus = 1
+    train_op = components.load_component_from_file('components/videopose_gen.yaml')(
+        image=image,
+        git_rev=git_rev,
+        resnet_model=resnet_model,
+        mode=mode,
+        name=name,
+        additional_args=additional_args)
+    get_container(train_op, train_env, train_num_gpus)

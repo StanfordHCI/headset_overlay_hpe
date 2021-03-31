@@ -23,6 +23,15 @@ RUN git pull
 RUN git checkout "model_v1.9_new"
 RUN pip3 install -r requirements.txt
 
+RUN apt-get install -y wget
+WORKDIR /workspace/
+RUN git clone --recursive https://github.com/StanfordHCI/simple-HRNet.git resnetpose
+WORKDIR /workspace/resnetpose
+RUN pip3 install -r requirements.txt
+WORKDIR /workspace/resnetpose/models/detectors/yolo/weights
+RUN bash ./download_weights.sh
+
+
 COPY *.py /workspace/
 
 USER root
