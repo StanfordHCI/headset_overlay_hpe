@@ -72,7 +72,6 @@ def train_headset_overlay2(
      .set_cpu_limit('7.5')
      .set_gpu_limit(str(train_num_gpus))
      .add_volume_mount(V1VolumeMount(name='tensorboard', mount_path='/shared/tensorboard'))
-     .add_volume_mount(V1VolumeMount(name='data', mount_path='/data/'))
      .add_volume_mount(V1VolumeMount(name='shm', mount_path='/dev/shm'))
      )
     (add_env(add_ssh_volume(train_op), train_env)
