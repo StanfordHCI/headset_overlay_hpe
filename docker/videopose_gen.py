@@ -54,8 +54,8 @@ def checkout_repo(git_rev: str):
 
 def gen_3d_h36m():
     gen_process = subprocess.Popen(
-        f"cd {REPO_DIR} &&"
-        f"python3 data/prepare_data_h36m.py "
+        f"cd {REPO_DIR}/data &&"
+        f"python3 prepare_data_h36m.py "
         f"--from-source-cdf {DATA_RAW_H36M} "
         f"{args.additional_args}",
         shell=True
@@ -64,8 +64,8 @@ def gen_3d_h36m():
 
 def gen_2d_h36m():
     gen_process = subprocess.Popen(
-        f"cd {REPO_DIR} &&"
-        f"python3 data/prepare_data_h36m.py "
+        f"cd {REPO_DIR}/data &&"
+        f"prepare_data_2d_h36m_resnet.py "
         f"--from-source-cdf {DATA_RAW_H36M}"
         f"{args.additional_args}",
         shell=True
@@ -74,7 +74,7 @@ def gen_2d_h36m():
 
 
 def sync_s3():
-    run_command(f"aws s3 sync --no-progress data_* {S3_OUTPUT_DIR}")
+    run_command(f'aws s3 sync --no-progress ./ {S3_OUTPUT_DIR} --recursive --exclude "*" --include "data*"')
 
 
 if __name__ == '__main__':

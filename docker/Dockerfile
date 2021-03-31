@@ -31,6 +31,7 @@ RUN pip3 install -r requirements.txt
 WORKDIR /workspace/resnetpose/models/detectors/yolo/weights
 RUN bash ./download_weights.sh
 
+RUN pip3 install --upgrade numba numpy numpy-quaternion
 
 COPY *.py /workspace/
 
