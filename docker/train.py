@@ -41,6 +41,7 @@ def checkout_repo(git_rev: str):
 
 
 def pull_data():
+    os.system("mkdir -p /data")
     if args.update_data == 'true':
         shutil.rmtree(DATA_DIR)
     if not os.path.exists(DATA_DIR) or args.update_data == 'true':

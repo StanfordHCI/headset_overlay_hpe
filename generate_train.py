@@ -65,7 +65,24 @@ def train_headset_overlay2(
         config=config,
         name=name,
         additional_args=additional_args)
-    get_container(train_op, train_env, train_num_gpus, "dataset-epic-kitchen")
+    (train_op.container
+     .set_memory_request('56Gi')
+     .set_memory_limit('56Gi')
+     .set_cpu_request('7.5')
+     .set_cpu_limit('7.5')
+     .set_gpu_limit(str(train_num_gpus))
+     .add_volume_mount(V1VolumeMount(name='tensorboard', mount_path='/shared/tensorboard'))
+     .add_volume_mount(V1VolumeMount(name='data', mount_path='/data/'))
+     .add_volume_mount(V1VolumeMount(name='shm', mount_path='/dev/shm'))
+     )
+    (add_env(add_ssh_volume(train_op), train_env)
+     .add_toleration(V1Toleration(key='nvidia.com/gpu', operator='Exists', effect='NoSchedule'))
+     .add_node_selector_constraint('beta.kubernetes.io/instance-type', f'p3.{2 * train_num_gpus}xlarge')
+     .add_volume(V1Volume(name='tensorboard',
+                          persistent_volume_claim=V1PersistentVolumeClaimVolumeSource('tensorboard-research-kf')))
+     # .add_volume(V1Volume(name='shm', host_path=V1HostPathVolumeSource(path='/dev/shm')))
+     .add_volume(V1Volume(name='shm', empty_dir=V1EmptyDirVolumeSource(medium='Memory')))
+     )
 
 @dsl.pipeline(
     name='Train and eval epic kitchen LSTM',
