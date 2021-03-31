@@ -20,7 +20,7 @@ def add_ssh_volume(op):
     return op
 
 
-def get_container(train_op, train_env, train_num_gpus):
+def get_container(train_op, train_env, train_num_gpus, drive='coco-headset-vol-1'):
     (train_op.container
      .set_memory_request('56Gi')
      .set_memory_limit('56Gi')
@@ -37,11 +37,35 @@ def get_container(train_op, train_env, train_num_gpus):
      .add_volume(V1Volume(name='tensorboard',
                           persistent_volume_claim=V1PersistentVolumeClaimVolumeSource('tensorboard-research-kf')))
      .add_volume(V1Volume(name='data',
-                          persistent_volume_claim=V1PersistentVolumeClaimVolumeSource('coco-headset-vol-1')))
+                          persistent_volume_claim=V1PersistentVolumeClaimVolumeSource(drive)))
      # .add_volume(V1Volume(name='shm', host_path=V1HostPathVolumeSource(path='/dev/shm')))
      .add_volume(V1Volume(name='shm', empty_dir=V1EmptyDirVolumeSource(medium='Memory')))
      )
 
+
+@dsl.pipeline(
+    name='train_headset_overlay2',
+    description='train_headset_overlay2'
+)
+def train_headset_overlay2(
+        image,
+        git_rev,
+        update_data,
+        config,
+        name,
+        additional_args,
+):
+    train_env = {}
+
+    train_num_gpus = 4
+    train_op = components.load_component_from_file('components/train.yaml')(
+        image=image,
+        git_rev=git_rev,
+        update_data=update_data,
+        config=config,
+        name=name,
+        additional_args=additional_args)
+    get_container(train_op, train_env, train_num_gpus, "dataset-epic-kitchen")
 
 @dsl.pipeline(
     name='Train and eval epic kitchen LSTM',

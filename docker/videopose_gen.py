@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -25,8 +26,10 @@ EXPERIMENT = args.name
 DATETIME = datetime.now().strftime('%Y%m%dT%H%M%S')
 S3_OUTPUT_DIR = f"s3://geniehai/{OWNER}/video/{PROJECT}/processed_data/{EXPERIMENT}/{DATETIME}/"
 RESNET_MODEL_S3 = args.resnet_model
-RESNET_MODEL_PATH = "/data/model/resnet.pth"
+RESNET_MODEL_PATH = "/workspace/resnetpose/weights/model_best.pth.tar"
 RESNET_REPO_PATH = os.path.join(REPO_DIR, "resnet.pth")
+
+h36m_3d_keypoints = "s3://geniehai/jackiey/videopose3d/data_3d_h36m_new2.npz"
 
 RESNET_REPO_DIR = "/workspace/resnetpose"
 RESNET_WEIGHT_DIR = os.path.join(RESNET_REPO_DIR, "weights")
@@ -44,6 +47,7 @@ def run_command(command):
 
 
 def get_resnet_model():
+    run_command(f"mkdir -p /workspace/resnetpose/weights/")
     run_command(f"rm {RESNET_MODEL_PATH}")
     run_command(f"aws s3 cp --no-progress {RESNET_MODEL_S3} {RESNET_MODEL_PATH}")
 
@@ -62,19 +66,29 @@ def gen_3d_h36m():
     )
     gen_process.wait()
 
+
 def gen_2d_h36m():
+    command = \
+        f"cd {REPO_DIR}/data &&" \
+        f"python ./prepare_data_2d_h36m_resnet.py " \
+        f"--from-source-cdf {DATA_RAW_H36M} " \
+        f"{args.additional_args}"
+    print(f"running: {command}")
     gen_process = subprocess.Popen(
-        f"cd {REPO_DIR}/data &&"
-        f"prepare_data_2d_h36m_resnet.py "
-        f"--from-source-cdf {DATA_RAW_H36M}"
-        f"{args.additional_args}",
+        command,
         shell=True
     )
     gen_process.wait()
 
 
 def sync_s3():
-    run_command(f'aws s3 sync --no-progress ./ {S3_OUTPUT_DIR} --recursive --exclude "*" --include "data*"')
+    run_command(
+        f'cd {REPO_DIR}/data && aws s3 cp --no-progress ./ {S3_OUTPUT_DIR} --recursive --exclude "*" --include "data_*"')
+
+
+def get_3d_points():
+    if args.mode == "2d_h36m":
+        run_command(f"cd {REPO_DIR}/data && aws s3 cp --no-progress {h36m_3d_keypoints} ./")
 
 
 if __name__ == '__main__':
@@ -83,6 +97,9 @@ if __name__ == '__main__':
     if args.mode == "3d_h36m":
         gen_3d_h36m()
     elif args.mode == "2d_h36m":
+        get_3d_points()
         get_resnet_model()
         gen_2d_h36m()
+
     sync_s3()
+    # time.sleep(60 * 60)

@@ -25,6 +25,7 @@ RUN pip3 install -r requirements.txt
 
 RUN apt-get install -y wget
 WORKDIR /workspace/
+RUN echo "cache bump"
 RUN git clone --recursive https://github.com/StanfordHCI/simple-HRNet.git resnetpose
 WORKDIR /workspace/resnetpose
 RUN pip3 install -r requirements.txt
