@@ -43,6 +43,51 @@ def get_container(train_op, train_env, train_num_gpus, drive='coco-headset-vol-1
      )
 
 
+def get_container_no_data(train_op, train_env, train_num_gpus):
+    (train_op.container
+     .set_memory_request('56Gi')
+     .set_memory_limit('56Gi')
+     .set_cpu_request('7.5')
+     .set_cpu_limit('7.5')
+     .set_gpu_limit(str(train_num_gpus))
+     .add_volume_mount(V1VolumeMount(name='tensorboard', mount_path='/shared/tensorboard'))
+     .add_volume_mount(V1VolumeMount(name='shm', mount_path='/dev/shm'))
+     )
+    (add_env(add_ssh_volume(train_op), train_env)
+     .add_toleration(V1Toleration(key='nvidia.com/gpu', operator='Exists', effect='NoSchedule'))
+     .add_node_selector_constraint('beta.kubernetes.io/instance-type', f'p3.{2 * train_num_gpus}xlarge')
+     .add_volume(V1Volume(name='tensorboard',
+                          persistent_volume_claim=V1PersistentVolumeClaimVolumeSource('tensorboard-research-kf')))
+     # .add_volume(V1Volume(name='shm', host_path=V1HostPathVolumeSource(path='/dev/shm')))
+     .add_volume(V1Volume(name='shm', empty_dir=V1EmptyDirVolumeSource(medium='Memory')))
+     )
+
+
+@dsl.pipeline(
+    name='videopose_gen2',
+    description='generate videopose data2'
+)
+def videopose_gen2(
+        image,
+        git_rev,
+        resnet_model,
+        mode,
+        name,
+        additional_args,
+):
+    train_env = {}
+
+    train_num_gpus = 1
+    train_op = components.load_component_from_file('components/videopose_gen.yaml')(
+        image=image,
+        git_rev=git_rev,
+        resnet_model=resnet_model,
+        mode=mode,
+        name=name,
+        additional_args=additional_args)
+    get_container_no_data(train_op, train_env, train_num_gpus)
+
+
 @dsl.pipeline(
     name='train_headset_overlay2',
     description='train_headset_overlay2'
@@ -65,23 +110,8 @@ def train_headset_overlay2(
         config=config,
         name=name,
         additional_args=additional_args)
-    (train_op.container
-     .set_memory_request('56Gi')
-     .set_memory_limit('56Gi')
-     .set_cpu_request('7.5')
-     .set_cpu_limit('7.5')
-     .set_gpu_limit(str(train_num_gpus))
-     .add_volume_mount(V1VolumeMount(name='tensorboard', mount_path='/shared/tensorboard'))
-     .add_volume_mount(V1VolumeMount(name='shm', mount_path='/dev/shm'))
-     )
-    (add_env(add_ssh_volume(train_op), train_env)
-     .add_toleration(V1Toleration(key='nvidia.com/gpu', operator='Exists', effect='NoSchedule'))
-     .add_node_selector_constraint('beta.kubernetes.io/instance-type', f'p3.{2 * train_num_gpus}xlarge')
-     .add_volume(V1Volume(name='tensorboard',
-                          persistent_volume_claim=V1PersistentVolumeClaimVolumeSource('tensorboard-research-kf')))
-     # .add_volume(V1Volume(name='shm', host_path=V1HostPathVolumeSource(path='/dev/shm')))
-     .add_volume(V1Volume(name='shm', empty_dir=V1EmptyDirVolumeSource(medium='Memory')))
-     )
+    get_container_no_data(train_op, train_env, train_num_gpus)
+
 
 @dsl.pipeline(
     name='Train and eval epic kitchen LSTM',
@@ -125,6 +155,7 @@ def videopose_pull(
         update_data=update_data,
         data=data)
     get_container(train_op, train_env, train_num_gpus)
+
 
 @dsl.pipeline(
     name='videopose_gen',
