@@ -66,8 +66,8 @@ def get_resnet_model():
 
 
 def checkout_repo(git_rev: str):
-    run_command(f"cd {REPO_DIR} && git pull && git checkout {git_rev}")
-    run_command(f"cd {RESNET_REPO_DIR} && git pull")
+    run_command(f"cd {REPO_DIR} && git pull && git checkout {git_rev} && git rev-parse HEAD")
+    run_command(f"cd {RESNET_REPO_DIR} && git pull && git rev-parse HEAD")
 
 
 def gen_3d_h36m():
@@ -148,19 +148,20 @@ def sync_s3():
 def get_3d_points():
     if args.mode == "2d_h36m" or args.mode == "train":
         run_command(f"cd {REPO_DIR}/data && aws s3 cp --no-progress {h36m_3d_keypoints} ./")
-    elif args.mode == "2d_mpi" or args.mode == "train":
+    if args.mode == "2d_mpi" or args.mode == "train":
         run_command(f"cd {REPO_DIR}/data && aws s3 cp --no-progress {mpi_3d_keypoints} ./")
 
 
 def get_2d_points():
     run_command(f"cd {REPO_DIR}/data && aws s3 cp --no-progress {mpi_2d_keypoints} ./")
     run_command(f"cd {REPO_DIR}/data && aws s3 cp --no-progress {h36m_2d_keypoints} ./")
+    run_command(f"cd {REPO_DIR}/data && mv data_2d_h36m_resnet.npz data_2d_h36m_new2_resnet.npz")
 
 
 def train_sync_s3():
     run_command(
         f'cd {CHECKPOINT_DIR} && '
-        f'aws s3 cp --no-progress ./ {S3_OUTPUT_DIR} --recursive --exclude "*" --include "data_*"'
+        f'aws s3 cp --no-progress ./ {S3_OUTPUT_DIR} --recursive'
     )
 
 
@@ -171,7 +172,6 @@ class OutputUpdateHandler(FileSystemEventHandler):
 
 
 if __name__ == '__main__':
-    checkout_repo(args.git_rev)
     checkout_repo(args.git_rev)
     if args.mode == "3d_h36m":
         gen_3d_h36m()
@@ -189,7 +189,7 @@ if __name__ == '__main__':
         get_3d_points()
         get_2d_points()
         link_log()
-        run_command(f"mkdir -p CHECKPOINT_DIR")
+        run_command(f"mkdir -p {CHECKPOINT_DIR}")
         event_handler = OutputUpdateHandler()
         observer = Observer()
         observer.schedule(event_handler, path=CHECKPOINT_DIR, recursive=True)

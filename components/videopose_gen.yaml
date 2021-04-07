@@ -6,6 +6,7 @@ inputs:
   - {name: git_rev, description: ''}
   - {name: mode, description: ''}
   - {name: name, description: ''}
+  - {name: model_file, description: ''}
   - {name: additional_args, description: ''}
 outputs:
   - {name: s3_model_dir}
@@ -18,6 +19,7 @@ implementation:
         --resnet_model, { inputValue: resnet_model },
         --mode, { inputValue: mode },
         --name, { inputValue: name },
+        --model_file, { inputValue: model_file },
         --additional_args, { inputValue: additional_args },
         --image, {inputValue: image}
     ]

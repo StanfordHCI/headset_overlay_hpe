@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description='Run training')
 parser.add_argument('--git_rev', type=str)
 parser.add_argument('--update_data', type=str)
 parser.add_argument('--config', type=str)  # coco/resnet50/256x192_d256x3_adam_lr1e-3.yaml
+parser.add_argument('--model_file', type=str)
 parser.add_argument('--name', type=str)
 parser.add_argument('--image', type=str)
 parser.add_argument('--additional_args', type=str)
@@ -34,6 +35,7 @@ DATA_DIR = os.path.join(DATA_DRIVE, "data")
 MODELS_DIR = os.path.join(DATA_DRIVE, "models")
 REPO_DATA_DIR = os.path.join(REPO_DIR, "data")
 REPO_MODELS_DIR = os.path.join(REPO_DIR, "models")
+MODEL_PATH = os.path.join(DATA_DRIVE, "hpe.model")
 
 
 def checkout_repo(git_rev: str):
@@ -55,6 +57,10 @@ def pull_data():
         print("pulling models")
         os.system(f"aws s3 cp {MODELS_S3} {DATA_DRIVE}")
         os.system(f"cd {DATA_DRIVE} && pbzip2 -dc models.tar.bz2 | tar x && rm models.tar.bz2")
+
+
+def acquire_model():
+    os.system(f"aws s3 cp {args.model_file} {MODEL_PATH}")
 
 
 def setup_dir():
@@ -84,14 +90,26 @@ if __name__ == '__main__':
     observer.schedule(event_handler, path=OUTPUT_DIR, recursive=True)
     observer.start()
 
-    train_process = subprocess.Popen(
-        f"cd {REPO_DIR} &&"
-        f"python3 pose_estimation/train.py "
-        f"--cfg experiments/{args.config} "
-        f"--log {LOG_DIR} "
-        f"{args.additional_args}",
-        shell=True
-    )
+    if args.model_file != "":
+        acquire_model()
+        train_process = subprocess.Popen(
+            f"cd {REPO_DIR} &&"
+            f"python3 pose_estimation/valid.py "
+            f"--cfg experiments/{args.config} "
+            f"--model-file experiments/{args.config} "
+            f"--log {LOG_DIR} "
+            f"{args.additional_args}",
+            shell=True
+        )
+    else:
+        train_process = subprocess.Popen(
+            f"cd {REPO_DIR} &&"
+            f"python3 pose_estimation/train.py "
+            f"--cfg experiments/{args.config} "
+            f"--log {LOG_DIR} "
+            f"{args.additional_args}",
+            shell=True
+        )
 
     train_process.wait()
     sync_s3()

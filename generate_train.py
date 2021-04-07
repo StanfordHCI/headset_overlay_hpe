@@ -167,6 +167,7 @@ def videopose_gen(
         resnet_model,
         mode,
         name,
+        model_file,
         additional_args,
 ):
     train_env = {}
@@ -178,5 +179,6 @@ def videopose_gen(
         resnet_model=resnet_model,
         mode=mode,
         name=name,
+        model_file=model_file,
         additional_args=additional_args)
     get_container(train_op, train_env, train_num_gpus)
