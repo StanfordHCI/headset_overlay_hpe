@@ -6,6 +6,7 @@ inputs:
   - {name: git_rev, description: ''}
   - {name: config, description: ''}
   - {name: name, description: ''}
+  - { name: model_file, description: '' }
   - {name: additional_args, description: ''}
 outputs:
   - {name: s3_model_dir}
@@ -18,6 +19,7 @@ implementation:
         --update_data, { inputValue: update_data },
         --config, { inputValue: config },
         --name, { inputValue: name },
+        --model_file, { inputValue: model_file },
         --additional_args, { inputValue: additional_args },
         --image, {inputValue: image}
     ]
