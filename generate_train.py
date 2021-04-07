@@ -98,6 +98,7 @@ def train_headset_overlay2(
         update_data,
         config,
         name,
+        model_file,
         additional_args,
 ):
     train_env = {}
@@ -109,6 +110,7 @@ def train_headset_overlay2(
         update_data=update_data,
         config=config,
         name=name,
+        model_file=model_file,
         additional_args=additional_args)
     get_container_no_data(train_op, train_env, train_num_gpus)
 
