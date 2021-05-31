@@ -92,15 +92,14 @@ if __name__ == '__main__':
 
     if args.model_file != "":
         acquire_model()
-        train_process = subprocess.Popen(
-            f"cd {REPO_DIR} &&"
-            f"python3 pose_estimation/valid.py "
-            f"--cfg experiments/{args.config} "
-            f"--model-file experiments/{args.config} "
-            f"--log {LOG_DIR} "
-            f"{args.additional_args}",
-            shell=True
-        )
+        cmd = \
+            f"cd {REPO_DIR} &&" \
+            f"python3 pose_estimation/valid.py " \
+            f"--cfg experiments/{args.config} " \
+            f"--model-file {MODEL_PATH} " \
+            f"{args.additional_args}"
+        print(cmd)
+        train_process = subprocess.Popen(cmd, shell=True)
     else:
         train_process = subprocess.Popen(
             f"cd {REPO_DIR} &&"
