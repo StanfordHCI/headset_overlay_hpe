@@ -101,14 +101,14 @@ if __name__ == '__main__':
         print(cmd)
         train_process = subprocess.Popen(cmd, shell=True)
     else:
-        train_process = subprocess.Popen(
-            f"cd {REPO_DIR} &&"
-            f"python3 pose_estimation/train.py "
-            f"--cfg experiments/{args.config} "
-            f"--log {LOG_DIR} "
-            f"{args.additional_args}",
-            shell=True
-        )
+        cmd = \
+            f"cd {REPO_DIR} &&" \
+            f"python3 pose_estimation/train.py " \
+            f"--cfg experiments/{args.config} " \
+            f"--log {LOG_DIR} " \
+            f"{args.additional_args}"
+        print(cmd)
+        train_process = subprocess.Popen(cmd, shell=True)
 
     train_process.wait()
     sync_s3()
